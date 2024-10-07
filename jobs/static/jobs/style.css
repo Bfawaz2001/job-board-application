@@ -91,18 +91,27 @@ ul li:hover {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
+/* Center the form and adjust the width of the input fields */
+form {
+    max-width: 500px;
+    margin: 0 auto; /* Centers the form on the page */
+}
+
 form input, form select, form textarea {
     display: block;
-    width: 100%;
+    width: 100%; /* Ensure the fields take full width of the form container */
     padding: 10px;
     margin: 10px 0;
     border-radius: 5px;
     border: 1px solid #ccc;
     font-size: 14px;
+    box-sizing: border-box; /* Prevents padding from expanding the width */
 }
 
+/* Restrict the description field from growing horizontally */
 form textarea {
     height: 150px;
+    resize: vertical; /* Allows resizing only vertically */
 }
 
 form input[type="date"] {
