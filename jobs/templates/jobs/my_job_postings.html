@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Job Postings</title>
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'jobs/style.css' %}">
+</head>
+<body>
+    <div class="container">
+        <h1>My Job Postings</h1>
+        <ul>
+            {% for job in jobs %}
+                <li>
+                    <a href="{% url 'edit_job' job.pk %}">{{ job.title }}</a>
+                    <p>{{ job.location }} | {{ job.employment_type }}</p>
+                    <form method="POST" action="{% url 'delete_job' job.pk %}" onsubmit="return confirm('Are you sure you want to delete this job?');">
+                        {% csrf_token %}
+                        <button type="submit">Delete</button>
+                    </form>
+                </li>
+            {% empty %}
+                <p>You have not posted any jobs yet.</p>
+            {% endfor %}
+        </ul>
+    </div>
+</body>
+</html>
