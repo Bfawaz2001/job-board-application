@@ -74,11 +74,33 @@ def edit_job(request, pk):
     job = get_object_or_404(Job, pk=pk)
     if request.user.profile.user_type != 'recruiter' or job.recruiter != request.user:
         return redirect('home')
+
     if request.method == 'POST':
         form = JobForm(request.POST, instance=job)
         if form.is_valid():
             form.save()
-            return redirect('home')
+            return redirect('my_job_postings')
     else:
         form = JobForm(instance=job)
+
     return render(request, 'jobs/edit_job.html', {'form': form, 'job': job})
+
+
+@login_required
+def my_job_postings(request):
+    if request.user.profile.user_type != 'recruiter':
+        return redirect('home')
+
+    jobs = Job.objects.filter(recruiter=request.user)  # Only fetch jobs posted by the current recruiter
+    return render(request, 'jobs/my_job_postings.html', {'jobs': jobs})
+
+
+@login_required
+def delete_job(request, pk):
+    job = get_object_or_404(Job, pk=pk)
+    if request.user.profile.user_type != 'recruiter' or job.recruiter != request.user:
+        return redirect('home')
+
+    if request.method == 'POST':
+        job.delete()
+        return redirect('my_job_postings')
