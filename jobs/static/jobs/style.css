@@ -9,24 +9,41 @@ body {
 nav {
     background-color: #2c3e50;
     padding: 10px 20px;
-    text-align: right;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
-nav a, nav form button {
+.nav-left p, .nav-right a, .nav-right form button {
+    font-size: 16px;
+    font-family: Arial, sans-serif;
     color: white;
-    margin-left: 15px;
     text-decoration: none;
+    margin-left: 15px;
     font-weight: bold;
 }
 
-nav form {
-    display: inline;
+.nav-left .nav-welcome {
+    margin: 0;
 }
 
-nav form button {
+.nav-right {
+    display: flex;
+    align-items: center;
+}
+
+.nav-right a, .nav-right form button {
     background: none;
     border: none;
     cursor: pointer;
+}
+
+.nav-right a:hover, .nav-right form button:hover {
+    text-decoration: underline;
+}
+
+.nav-right form {
+    display: inline;
 }
 
 h1 {
@@ -64,7 +81,7 @@ ul li:hover {
     background-color: #ecf0f1;
 }
 
-/* General form styles for Sign Up and Login */
+/* General form styles for Sign Up, Login, and Job Posting */
 .container {
     max-width: 600px;
     margin: 0 auto;
@@ -74,17 +91,23 @@ ul li:hover {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-form {
-    margin: 20px 0;
-}
-
-form input, form button {
+form input, form select, form textarea {
     display: block;
     width: 100%;
     padding: 10px;
     margin: 10px 0;
     border-radius: 5px;
     border: 1px solid #ccc;
+    font-size: 14px;
+}
+
+form textarea {
+    height: 150px;
+}
+
+form input[type="date"] {
+    font-size: 14px;
+    padding: 10px;
 }
 
 form button {
@@ -92,10 +115,38 @@ form button {
     color: white;
     font-weight: bold;
     cursor: pointer;
+    border: none;
+    padding: 10px;
+    width: 100%;
 }
 
 form button:hover {
     background-color: #34495e;
+}
+
+/* Styling for validation errors */
+.form-errors {
+    background-color: #e74c3c;
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+}
+
+.form-errors ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.form-errors li {
+    font-size: 14px;
+    margin: 5px 0;
+}
+
+/* Specific styling for date input errors */
+input[type="date"]:invalid {
+    border-color: #e74c3c;
+    background-color: #fdecea;
 }
 
 /* Styling for job details page */

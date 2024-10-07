@@ -1,14 +1,33 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Post a Job</title>
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'jobs/style.css' %}">
 </head>
 <body>
-    <h1>Post a Job</h1>
-    <form method="POST">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Post Job</button>
-    </form>
+    <div class="container">
+        <h1>Post a Job</h1>
+        <form method="POST">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">Post Job</button>
+        </form>
+
+        <!-- Display validation errors -->
+        {% if form.errors %}
+            <div class="form-errors">
+                <ul>
+                    {% for field in form %}
+                        {% for error in field.errors %}
+                            <li>{{ field.label }}: {{ error }}</li>
+                        {% endfor %}
+                    {% endfor %}
+                </ul>
+            </div>
+        {% endif %}
+    </div>
 </body>
 </html>
