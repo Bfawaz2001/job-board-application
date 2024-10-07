@@ -1,13 +1,18 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Job Listings</title>
+    <!-- Load the static CSS file -->
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'jobs/style.css' %}">
 </head>
 <body>
     <nav>
         {% if user.is_authenticated %}
             <p>Welcome, {{ user.username }}!</p>
-            <!-- Replace the logout link with a POST form -->
+            <!-- Use POST form for logout -->
             <form method="POST" action="{% url 'logout' %}">
                 {% csrf_token %}
                 <button type="submit">Logout</button>
