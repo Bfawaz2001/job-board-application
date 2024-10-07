@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile</title>
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'jobs/style.css' %}">
+</head>
+<body>
+    <div class="container">
+        <h1>{{ profile.user.username }}'s Profile</h1>
+        <p><strong>User Type:</strong> {{ profile.get_user_type_display }}</p>
+        <p><strong>Bio:</strong> {{ profile.bio }}</p>
+        <a href="{% url 'edit_profile' %}">Edit Profile</a>
+    </div>
+</body>
+</html>

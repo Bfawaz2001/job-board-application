@@ -17,7 +17,9 @@
         </div>
         <div class="nav-right">
             {% if user.is_authenticated %}
-                <a href="{% url 'post_job' %}">Post a Job</a>
+                {% if user.profile.user_type == 'recruiter' %}
+                    <a href="{% url 'post_job' %}">Post a Job</a>
+                {% endif %}
                 <form method="POST" action="{% url 'logout' %}" style="display: inline;">
                     {% csrf_token %}
                     <button type="submit">Logout</button>

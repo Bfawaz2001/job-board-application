@@ -81,7 +81,43 @@ ul li:hover {
     background-color: #ecf0f1;
 }
 
-/* General form styles for Sign Up, Login, and Job Posting */
+/* Styling for sign-up form */
+.signup-form {
+    max-width: 500px;
+    margin: 0 auto;
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.signup-form h1 {
+    text-align: center;
+    color: #2c3e50;
+    margin-bottom: 20px;
+}
+
+.signup-form form input, .signup-form form select, .signup-form form button {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    font-size: 14px;
+}
+
+.signup-form form button {
+    background-color: #2c3e50;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.signup-form form button:hover {
+    background-color: #34495e;
+}
+
+/* General form styles for Job Posting and editing */
 .container {
     max-width: 600px;
     margin: 0 auto;
@@ -91,7 +127,6 @@ ul li:hover {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-/* Center the form and adjust the width of the input fields */
 form {
     max-width: 500px;
     margin: 0 auto; /* Centers the form on the page */
@@ -99,7 +134,7 @@ form {
 
 form input, form select, form textarea {
     display: block;
-    width: 100%; /* Ensure the fields take full width of the form container */
+    width: 100%;
     padding: 10px;
     margin: 10px 0;
     border-radius: 5px;
@@ -108,7 +143,6 @@ form input, form select, form textarea {
     box-sizing: border-box; /* Prevents padding from expanding the width */
 }
 
-/* Restrict the description field from growing horizontally */
 form textarea {
     height: 150px;
     resize: vertical; /* Allows resizing only vertically */
