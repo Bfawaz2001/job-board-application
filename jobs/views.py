@@ -3,14 +3,14 @@ from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
 from .models import Job, Profile
-from .forms import JobForm, SignUpForm, ProfileForm
+from .forms import JobForm, SignUpForm, ProfileForm, ApplicantProfileForm
 from .forms import ApplicationForm
 from django.contrib.auth.forms import UserChangeForm
 
 
 # Home view displaying job listings
 def home(request):
-    jobs = Job.objects.all()
+    jobs = Job.objects.all()  # Make sure jobs are being fetched correctly
     return render(request, 'jobs/job_list.html', {'jobs': jobs})
 
 
@@ -128,11 +128,11 @@ def apply_for_job(request, pk):
 @login_required
 def update_profile(request):
     if request.method == 'POST':
-        form = UserChangeForm(request.POST, instance=request.user)
+        form = ApplicantProfileForm(request.POST, instance=request.user)
         if form.is_valid():
             form.save()
             return redirect('home')
     else:
-        form = UserChangeForm(instance=request.user)
+        form = ApplicantProfileForm(instance=request.user)
 
     return render(request, 'jobs/update_profile.html', {'form': form})

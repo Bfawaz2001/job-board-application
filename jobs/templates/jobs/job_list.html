@@ -1,6 +1,8 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Job Listings</title>
     {% load static %}
     <link rel="stylesheet" type="text/css" href="{% static 'jobs/style.css' %}">
@@ -31,17 +33,19 @@
         </div>
     </nav>
 
-    <h1>Job Listings</h1>
-    <ul>
-        {% for job in jobs %}
-            <li>
-                <a href="{% url 'job_detail' job.pk %}">{{ job.title }} - {{ job.company }}</a>
-                <p>{{ job.location }} | {{ job.employment_type }}</p>
-                {% if user.is_authenticated and user.profile.user_type == 'applicant' %}
-                    <a href="{% url 'apply_for_job' job.pk %}">Apply for this Job</a>
-                {% endif %}
-            </li>
-        {% endfor %}
-    </ul>
+    <div class="container">
+        <h1>Job Listings</h1>
+        <ul class="job-listings">
+            {% for job in jobs %}
+                <li>
+                    <a href="{% url 'job_detail' job.pk %}">{{ job.title }} - {{ job.company }}</a>
+                    <p>{{ job.location }} | {{ job.employment_type }}</p>
+                    {% if user.is_authenticated and user.profile.user_type == 'applicant' %}
+                        <a href="{% url 'apply_for_job' job.pk %}">Apply for this Job</a>
+                    {% endif %}
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
 </body>
 </html>
