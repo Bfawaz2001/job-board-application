@@ -1,10 +1,7 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Job Listings</title>
-    <!-- Load the static CSS file -->
     {% load static %}
     <link rel="stylesheet" type="text/css" href="{% static 'jobs/style.css' %}">
 </head>
@@ -19,7 +16,9 @@
             {% if user.is_authenticated %}
                 {% if user.profile.user_type == 'recruiter' %}
                     <a href="{% url 'post_job' %}">Post a Job</a>
-                    <a href="{% url 'my_job_postings' %}">My Job Postings</a> <!-- New link for recruiters -->
+                    <a href="{% url 'my_job_postings' %}">My Job Postings</a>
+                {% elif user.profile.user_type == 'applicant' %}
+                    <a href="{% url 'update_profile' %}">Update Profile</a>
                 {% endif %}
                 <form method="POST" action="{% url 'logout' %}" style="display: inline;">
                     {% csrf_token %}
@@ -38,6 +37,9 @@
             <li>
                 <a href="{% url 'job_detail' job.pk %}">{{ job.title }} - {{ job.company }}</a>
                 <p>{{ job.location }} | {{ job.employment_type }}</p>
+                {% if user.is_authenticated and user.profile.user_type == 'applicant' %}
+                    <a href="{% url 'apply_for_job' job.pk %}">Apply for this Job</a>
+                {% endif %}
             </li>
         {% endfor %}
     </ul>

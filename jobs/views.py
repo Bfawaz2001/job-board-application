@@ -4,6 +4,8 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
 from .models import Job, Profile
 from .forms import JobForm, SignUpForm, ProfileForm
+from .forms import ApplicationForm
+from django.contrib.auth.forms import UserChangeForm
 
 
 # Home view displaying job listings
@@ -104,3 +106,33 @@ def delete_job(request, pk):
     if request.method == 'POST':
         job.delete()
         return redirect('my_job_postings')
+
+
+@login_required
+def apply_for_job(request, pk):
+    job = get_object_or_404(Job, pk=pk)
+    if request.method == 'POST':
+        form = ApplicationForm(request.POST, request.FILES)
+        if form.is_valid():
+            application = form.save(commit=False)
+            application.applicant = request.user
+            application.job = job
+            application.save()
+            return redirect('home')
+    else:
+        form = ApplicationForm()
+
+    return render(request, 'jobs/apply_for_job.html', {'form': form, 'job': job})
+
+
+@login_required
+def update_profile(request):
+    if request.method == 'POST':
+        form = UserChangeForm(request.POST, instance=request.user)
+        if form.is_valid():
+            form.save()
+            return redirect('home')
+    else:
+        form = UserChangeForm(instance=request.user)
+
+    return render(request, 'jobs/update_profile.html', {'form': form})

@@ -44,3 +44,14 @@ def create_user_profile(sender, instance, created, **kwargs):
 @receiver(post_save, sender=User)
 def save_user_profile(sender, instance, **kwargs):
     instance.profile.save()
+
+
+class Application(models.Model):
+    applicant = models.ForeignKey(User, on_delete=models.CASCADE)
+    job = models.ForeignKey(Job, on_delete=models.CASCADE)
+    resume = models.FileField(upload_to='resumes/', blank=True, null=True)
+    cover_letter = models.TextField(blank=True, null=True)
+    applied_on = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.applicant.username} applied for {self.job.title}"

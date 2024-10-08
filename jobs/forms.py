@@ -5,7 +5,7 @@ from django import forms
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 from .models import Profile
-
+from .models import Application
 
 class JobForm(forms.ModelForm):
     class Meta:
@@ -28,3 +28,9 @@ class ProfileForm(forms.ModelForm):
     class Meta:
         model = Profile
         fields = ['bio']
+
+
+class ApplicationForm(forms.ModelForm):
+    class Meta:
+        model = Application
+        fields = ['resume', 'cover_letter']
