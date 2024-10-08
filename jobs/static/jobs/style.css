@@ -52,18 +52,32 @@ nav {
 .nav-right {
     display: flex;
     align-items: center;
+    gap: 15px;  /* Add space between items */
 }
 
 .nav-right a, .nav-right form button, .back-to-home {
     font-size: 16px;
-    margin-left: 15px;
     color: #ecf0f1;
     background-color: transparent;
     border: none;
     cursor: pointer;
 }
 
-.nav-right form button:hover, .nav-right a:hover, .back-to-home:hover {
+.nav-right form {
+    display: inline;  /* Align form inline with other items */
+}
+
+.nav-right form button {
+    background-color: transparent;
+    color: #ecf0f1;
+    border: none;
+}
+
+.nav-right form button:hover {
+    color: #bdc3c7;
+}
+
+.nav-right a:hover, .back-to-home:hover {
     color: #bdc3c7;
 }
 
@@ -125,20 +139,4 @@ form input, form textarea, form select {
 
 textarea {
     resize: vertical;
-}
-
-/* Links to Home */
-.back-to-home {
-    text-align: center;
-    margin-top: 20px;
-    font-size: 16px;
-}
-
-.back-to-home a {
-    color: #3498db;
-    text-decoration: none;
-}
-
-.back-to-home a:hover {
-    text-decoration: underline;
 }

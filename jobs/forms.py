@@ -10,9 +10,13 @@ from .models import Application
 class JobForm(forms.ModelForm):
     class Meta:
         model = Job
-        fields = ['title', 'company', 'description', 'location', 'employment_type', 'application_deadline']
+        fields = ['title', 'company', 'location', 'employment_type', 'working_condition', 'description', 'application_deadline']
         widgets = {
-            'application_deadline': DateInput(attrs={'type': 'date'}),
+            'employment_type': forms.Select(choices=Job.EMPLOYMENT_TYPE_CHOICES),
+            'working_condition': forms.Select(choices=Job.WORKING_CONDITION_CHOICES),
+            'description': forms.Textarea(attrs={'rows': 4}),
+            'application_deadline': forms.DateInput(attrs={'type': 'date'}),
+            'location': forms.TextInput()  # Changed to TextInput
         }
 
 

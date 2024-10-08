@@ -8,14 +8,28 @@ from django.dispatch import receiver
 
 
 class Job(models.Model):
-    title = models.CharField(max_length=200)
-    company = models.CharField(max_length=200)
+    EMPLOYMENT_TYPE_CHOICES = [
+        ('full_time', 'Full Time'),
+        ('part_time', 'Part Time'),
+        ('contract', 'Contract')
+    ]
+
+    WORKING_CONDITION_CHOICES = [
+        ('in_office', 'In Office'),
+        ('remote', 'Remote'),
+        ('hybrid', 'Hybrid')
+    ]
+
+    title = models.CharField(max_length=255)
+    company = models.CharField(max_length=255)
+    location = models.CharField(max_length=255)
+    employment_type = models.CharField(max_length=50, choices=EMPLOYMENT_TYPE_CHOICES)
+    working_condition = models.CharField(max_length=50, choices=WORKING_CONDITION_CHOICES)
     description = models.TextField()
-    location = models.CharField(max_length=200)
-    employment_type = models.CharField(max_length=50)
     application_deadline = models.DateField()
     posted_on = models.DateTimeField(auto_now_add=True)
-    recruiter = models.ForeignKey(User, on_delete=models.CASCADE)  # This field links the job to a recruiter
+
+    recruiter = models.ForeignKey(User, on_delete=models.CASCADE, related_name='posted_jobs')
 
     def __str__(self):
         return self.title

@@ -38,7 +38,8 @@
         <h1>{{ job.title }} at {{ job.company }}</h1>
         <p>{{ job.description }}</p>
         <p>Location: {{ job.location }}</p>
-        <p>Employment Type: {{ job.employment_type }}</p>
+        <p>Employment Type: {{ job.get_employment_type_display }}</p>
+        <p>Working Condition: {{ job.get_working_condition_display }} </p>
         <p>Application Deadline: {{ job.application_deadline }}</p>
 
         {% if user.is_authenticated and user.profile.user_type == 'applicant' %}

@@ -6,11 +6,29 @@ from .models import Job, Profile
 from .forms import JobForm, SignUpForm, ProfileForm, ApplicantProfileForm
 from .forms import ApplicationForm
 from django.contrib.auth.forms import UserChangeForm
+from django.db.models import Q
 
 
 # Home view displaying job listings
 def home(request):
-    jobs = Job.objects.all()  # Make sure jobs are being fetched correctly
+    jobs = Job.objects.all()
+
+    # Get search query and filters from request GET parameters
+    search_query = request.GET.get('search', '')
+    employment_type = request.GET.get('employment_type', '')
+    working_condition = request.GET.get('working_condition', '')
+    location = request.GET.get('location', '')
+
+    # Apply filters if provided
+    if search_query:
+        jobs = jobs.filter(Q(title__icontains=search_query) | Q(company__icontains=search_query))
+    if employment_type:
+        jobs = jobs.filter(employment_type=employment_type)
+    if working_condition:
+        jobs = jobs.filter(working_condition=working_condition)
+    if location:
+        jobs = jobs.filter(location__icontains=location)
+
     return render(request, 'jobs/job_list.html', {'jobs': jobs})
 
 
@@ -23,19 +41,16 @@ def job_detail(request, pk):
 # View to post a new job (for recruiters)
 @login_required
 def post_job(request):
-    if request.user.profile.user_type != 'recruiter':
-        return redirect('home')
     if request.method == 'POST':
         form = JobForm(request.POST)
         if form.is_valid():
             job = form.save(commit=False)
-            job.recruiter = request.user  # Assign the job to the recruiter
+            job.recruiter = request.user  # Set the recruiter field to the current user
             job.save()
             return redirect('home')
     else:
         form = JobForm()
     return render(request, 'jobs/post_job.html', {'form': form})
-
 
 # Sign-up view to register new users
 def signup(request):
@@ -136,3 +151,31 @@ def update_profile(request):
         form = ApplicantProfileForm(instance=request.user)
 
     return render(request, 'jobs/update_profile.html', {'form': form})
+
+
+def job_list(request):
+    jobs = Job.objects.all()  # Initially fetch all jobs
+
+    # Get the query parameters for search and filters
+    title_query = request.GET.get('title')
+    location_query = request.GET.get('location')
+    employment_type_query = request.GET.get('employment_type')
+    working_condition_query = request.GET.get('working_condition')
+
+    # Filter by title if provided
+    if title_query:
+        jobs = jobs.filter(title__icontains=title_query)
+
+    # Filter by location if provided
+    if location_query:
+        jobs = jobs.filter(location__icontains=location_query)
+
+    # Filter by employment type if provided
+    if employment_type_query:
+        jobs = jobs.filter(employment_type=employment_type_query)
+
+    # Filter by working condition if provided
+    if working_condition_query:
+        jobs = jobs.filter(working_condition=working_condition_query)
+
+    return render(request, 'jobs/job_list.html', {'jobs': jobs})
