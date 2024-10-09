@@ -83,7 +83,7 @@ nav {
 
 /* Specific Style for the "Back to Home" link */
 .back-to-home {
-    color: red; /* Red color for Back To Home link */
+    color: #bdc3c7; /* Red color for Back To Home link */
 }
 
 .back-to-home:hover {
@@ -139,4 +139,50 @@ form input, form textarea, form select {
 
 textarea {
     resize: vertical;
+}
+
+/* My Job Postings and My Applications CSS */
+ul.posting-list, ul.application-list {
+    list-style-type: none;
+    padding: 0;
+    margin: 20px 0;
+}
+
+ul.posting-list li, ul.application-list li {
+    background-color: #f9f9f9;
+    padding: 15px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+}
+
+ul.posting-list li h3, ul.application-list li h3 {
+    font-size: 18px;
+    font-weight: bold;
+    margin: 0 0 10px;
+}
+
+ul.posting-list li p, ul.application-list li p {
+    font-size: 14px;
+    color: #666;
+    margin: 5px 0;
+}
+
+/* Hover effect */
+ul.posting-list li:hover, ul.application-list li:hover {
+    background-color: #eef;
+    cursor: pointer;
+}
+
+button {
+    padding: 10px 15px;
+    background-color: #3498db;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #2980b9;
 }

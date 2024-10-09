@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/5.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
-
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -140,3 +140,6 @@ EMAIL_HOST_PASSWORD = '99cca15bfe6531'  # Your Mailtrap password
 EMAIL_PORT = 2525
 EMAIL_USE_TLS = True  # TLS should be enabled
 DEFAULT_FROM_EMAIL = 'no-reply@jobboardapp.com'  # Update to your default email
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')

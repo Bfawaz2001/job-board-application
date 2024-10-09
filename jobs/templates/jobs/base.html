@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Update Profile</title>
+    <title>{% block title %}Job Board{% endblock %}</title>
     {% load static %}
-    <link rel="stylesheet" href="{% static 'jobs/style.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'jobs/style.css' %}">
 </head>
 <body>
     <nav>
@@ -15,32 +15,35 @@
             {% endif %}
         </div>
         <div class="nav-right">
-            <a href="{% url 'home' %}" class="back-to-home">Back To Home</a>
+            <!-- Conditionally display the Back to Home button (hidden on the homepage) -->
+            {% if not request.resolver_match.url_name == 'home' %}
+                <a href="{% url 'home' %}" class="back-to-home" style="color:red;">Back To Home</a>
+            {% endif %}
 
+            <!-- Navigation options for authenticated users -->
             {% if user.is_authenticated %}
                 {% if user.profile.user_type == 'recruiter' %}
                     <a href="{% url 'post_job' %}">Post a Job</a>
                     <a href="{% url 'my_job_postings' %}">My Job Postings</a>
                 {% elif user.profile.user_type == 'applicant' %}
                     <a href="{% url 'my_applications' %}">My Applications</a>
+                    <a href="{% url 'update_profile' %}">Update Profile</a> <!-- Ensure this shows for applicants -->
                 {% endif %}
+                <!-- Logout button -->
                 <form method="POST" action="{% url 'logout' %}" style="display: inline;">
                     {% csrf_token %}
                     <button type="submit">Logout</button>
                 </form>
             {% else %}
+                <!-- Links for non-authenticated users -->
                 <a href="{% url 'login' %}">Login</a>
                 <a href="{% url 'signup' %}">Sign Up</a>
             {% endif %}
         </div>
     </nav>
+
     <div class="container">
-        <h1>Update Profile</h1>
-        <form method="POST">
-            {% csrf_token %}
-            {{ form.as_p }}
-            <button type="submit">Update</button>
-        </form>
+        {% block content %}{% endblock %}
     </div>
 </body>
 </html>

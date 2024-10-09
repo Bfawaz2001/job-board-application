@@ -1,83 +1,44 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Job Listings</title>
-    {% load static %}
-    <link rel="stylesheet" type="text/css" href="{% static 'jobs/style.css' %}">
-</head>
-<body>
-    <nav>
-        <div class="nav-left">
-            {% if user.is_authenticated %}
-                <p>Welcome, {{ user.username }}!</p>
-            {% endif %}
-        </div>
-        <div class="nav-right">
-            {% if user.is_authenticated %}
-                {% if user.profile.user_type == 'recruiter' %}
-                    <a href="{% url 'post_job' %}">Post a Job</a>
-                    <a href="{% url 'my_job_postings' %}">My Job Postings</a>
-                {% elif user.profile.user_type == 'applicant' %}
-                    <a href="{% url 'update_profile' %}">Update Profile</a>
-                {% endif %}
-                {% if request.path != '/' %}
-                    <a class="back-to-home" href="{% url 'job_list' %}">Back To Home</a>
-                {% endif %}
-                <form method="POST" action="{% url 'logout' %}">
-                    {% csrf_token %}
-                    <button type="submit">Logout</button>
-                </form>
-            {% else %}
-                {% if request.path != '/' %}
-                    <a class="back-to-home" href="{% url 'job_list' %}">Back To Home</a>
-                {% endif %}
-                <a href="{% url 'login' %}">Login</a>
-                <a href="{% url 'signup' %}">Sign Up</a>
-            {% endif %}
-        </div>
-    </nav>
+{% extends 'jobs/base.html' %}
 
-    <div class="container">
-        <h1>Job Listings</h1>
+{% block title %}Job Listings{% endblock %}
 
-        <form method="GET" action="{% url 'home' %}">
-            <!-- Search Bar -->
-            <input type="text" name="search" placeholder="Search for jobs..." value="{{ request.GET.search }}">
+{% block content %}
+    <h1>Job Listings</h1>
 
-            <!-- Filter by Employment Type -->
-            <select name="employment_type">
-                <option value="">All Types</option>
-                <option value="full_time" {% if request.GET.employment_type == 'full_time' %}selected{% endif %}>Full Time</option>
-                <option value="part_time" {% if request.GET.employment_type == 'part_time' %}selected{% endif %}>Part Time</option>
-                <option value="contract" {% if request.GET.employment_type == 'contract' %}selected{% endif %}>Contract</option>
-            </select>
+    <!-- Search and Filter Form -->
+    <form method="GET" action="{% url 'home' %}">
+        <input type="text" name="search" placeholder="Search by title or company" value="{{ request.GET.search }}">
 
-            <!-- Filter by Working Condition -->
-            <select name="working_condition">
-                <option value="">All Conditions</option>
-                <option value="in_office" {% if request.GET.working_condition == 'in_office' %}selected{% endif %}>In Office</option>
-                <option value="remote" {% if request.GET.working_condition == 'remote' %}selected{% endif %}>Remote</option>
-                <option value="hybrid" {% if request.GET.working_condition == 'hybrid' %}selected{% endif %}>Hybrid</option>
-            </select>
+        <select name="employment_type">
+            <option value="">Any Employment Type</option>
+            <option value="full_time" {% if request.GET.employment_type == 'full_time' %}selected{% endif %}>Full Time</option>
+            <option value="part_time" {% if request.GET.employment_type == 'part_time' %}selected{% endif %}>Part Time</option>
+            <option value="contract" {% if request.GET.employment_type == 'contract' %}selected{% endif %}>Contract</option>
+        </select>
 
-            <!-- Filter by Location -->
-            <input type="text" name="location" placeholder="Enter location..." value="{{ request.GET.location }}">
+        <select name="working_condition">
+            <option value="">Any Working Condition</option>
+            <option value="in_office" {% if request.GET.working_condition == 'in_office' %}selected{% endif %}>In Office</option>
+            <option value="remote" {% if request.GET.working_condition == 'remote' %}selected{% endif %}>Remote</option>
+            <option value="hybrid" {% if request.GET.working_condition == 'hybrid' %}selected{% endif %}>Hybrid</option>
+        </select>
 
-            <!-- Submit Button -->
-            <button type="submit">Search</button>
-        </form>
+        <input type="text" name="location" placeholder="Location" value="{{ request.GET.location }}">
 
+        <button type="submit">Search</button>
+    </form>
 
-        <ul class="job-listings">
+    <!-- Job Listings -->
+    <ul class="job-listings">
+        {% if jobs %}
             {% for job in jobs %}
                 <li>
                     <a href="{% url 'job_detail' job.pk %}">{{ job.title }} - {{ job.company }}</a>
                     <p>{{ job.location }} | {{ job.get_employment_type_display }} | {{ job.get_working_condition_display }}</p>
                 </li>
             {% endfor %}
-        </ul>
-    </div>
-</body>
-</html>
+        {% else %}
+            <p>No jobs found matching your criteria.</p>
+        {% endif %}
+    </ul>
+{% endblock %}

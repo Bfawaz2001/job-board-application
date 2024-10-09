@@ -1,45 +1,12 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Apply for {{ job.title }}</title>
-    {% load static %}
-    <link rel="stylesheet" href="{% static 'jobs/style.css' %}">
-</head>
-<body>
-    <nav>
-        <div class="nav-left">
-            {% if user.is_authenticated %}
-                <p class="nav-welcome">Welcome, {{ user.username }}!</p>
-            {% endif %}
-        </div>
-        <div class="nav-right">
-            <a href="{% url 'home' %}" class="back-to-home">Back To Home</a> <!-- Moved here -->
-            {% if user.is_authenticated %}
-                {% if user.profile.user_type == 'recruiter' %}
-                    <a href="{% url 'post_job' %}">Post a Job</a>
-                    <a href="{% url 'my_job_postings' %}">My Job Postings</a>
-                {% elif user.profile.user_type == 'applicant' %}
-                    <a href="{% url 'update_profile' %}">Update Profile</a>
-                {% endif %}
-                <form method="POST" action="{% url 'logout' %}" style="display: inline;">
-                    {% csrf_token %}
-                    <button type="submit">Logout</button>
-                </form>
-            {% else %}
-                <a href="{% url 'login' %}">Login</a>
-                <a href="{% url 'signup' %}">Sign Up</a>
-            {% endif %}
-        </div>
-    </nav>
-    <div class="container">
-        <h1>Apply for {{ job.title }}</h1>
-        <form method="POST" enctype="multipart/form-data">
-            {% csrf_token %}
-            {{ form.as_p }}
-            <button type="submit">Submit Application</button>
-        </form>
-    </div>
-</body>
-</html>
+{% extends 'jobs/base.html' %}
+
+{% block title %}Apply for Job{% endblock %}
+
+{% block content %}
+    <h1>Apply for {{ job.title }} at {{ job.company }}</h1>
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Submit Application</button>
+    </form>
+{% endblock %}

@@ -1,0 +1,9 @@
+{% extends "jobs/base.html" %}
+{% block content %}
+<h2>Are you sure you want to delete the job "{{ job.title }}"?</h2>
+<form method="POST">
+    {% csrf_token %}
+    <button type="submit">Yes, delete this job</button>
+    <a href="{% url 'my_job_postings' %}">No, go back</a>
+</form>
+{% endblock %}

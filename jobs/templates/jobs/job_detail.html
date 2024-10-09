@@ -15,13 +15,14 @@
             {% endif %}
         </div>
         <div class="nav-right">
-            <a href="{% url 'home' %}" class="back-to-home">Back To Home</a> <!-- Moved here -->
+            <a href="{% url 'home' %}" class="back-to-home">Back To Home</a>
+
             {% if user.is_authenticated %}
                 {% if user.profile.user_type == 'recruiter' %}
                     <a href="{% url 'post_job' %}">Post a Job</a>
                     <a href="{% url 'my_job_postings' %}">My Job Postings</a>
                 {% elif user.profile.user_type == 'applicant' %}
-                    <a href="{% url 'update_profile' %}">Update Profile</a>
+                    <a href="{% url 'my_applications' %}">My Applications</a>
                 {% endif %}
                 <form method="POST" action="{% url 'logout' %}" style="display: inline;">
                     {% csrf_token %}

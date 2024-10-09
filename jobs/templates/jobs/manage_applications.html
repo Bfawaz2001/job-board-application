@@ -1,0 +1,39 @@
+{% extends "jobs/base.html" %}
+
+{% block content %}
+<h1>Applications for {{ job.title }}</h1>
+
+<ul class="application-list">
+    {% for application in applications %}
+        <li>
+            <h3>{{ application.applicant.username }}</h3>
+            <p>Submitted on {{ application.applied_on }}</p>
+
+            {% if application.resume %}
+                <p>Resume: <a href="{{ application.resume.url }}" download>Download</a></p>
+            {% else %}
+                <p>No Resume Uploaded</p>
+            {% endif %}
+
+            {% if application.cover_letter %}
+                <p>Cover Letter: {{ application.cover_letter }}</p>
+            {% else %}
+                <p>No Cover Letter Provided</p>
+            {% endif %}
+
+            <!-- Form for updating application status -->
+            <form method="POST" action="{% url 'update_application_status' application.pk %}">
+                {% csrf_token %}
+                <label for="status">Update Status:</label>
+                <select name="status" id="status">
+                    <option value="under_review" {% if application.status == 'under_review' %}selected{% endif %}>Under Review</option>
+                    <option value="interviewing" {% if application.status == 'interviewing' %}selected{% endif %}>Interviewing</option>
+                    <option value="rejected" {% if application.status == 'rejected' %}selected{% endif %}>Rejected</option>
+                    <option value="hired" {% if application.status == 'hired' %}selected{% endif %}>Hired</option>
+                </select>
+                <button type="submit">Update Status</button>
+            </form>
+        </li>
+    {% endfor %}
+</ul>
+{% endblock %}

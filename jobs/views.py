@@ -1,15 +1,11 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
-from .models import Job
-from .forms import JobForm, SignUpForm, ProfileForm, ApplicantProfileForm
-from .forms import ApplicationForm
+from .models import Job, Application
+from .forms import JobForm, SignUpForm, ProfileForm, ApplicantProfileForm, ApplicationForm, ApplicationStatusForm
 from django.db.models import Q
-from .models import Application
 from django.core.mail import send_mail
 from django.conf import settings
-from .forms import ApplicationStatusForm
-
 
 
 # Home view displaying job listings
@@ -54,6 +50,7 @@ def post_job(request):
     else:
         form = JobForm()
     return render(request, 'jobs/post_job.html', {'form': form})
+
 
 # Sign-up view to register new users
 def signup(request):
@@ -122,8 +119,24 @@ def delete_job(request, pk):
         return redirect('home')
 
     if request.method == 'POST':
+        # Get all applicants for this job
+        applications = Application.objects.filter(job=job)
+
+        # Notify all applicants via email
+        for application in applications:
+            send_mail(
+                'Job Deleted Notification',
+                f'The job "{job.title}" at {job.company} has been removed. Your application will no longer be processed.',
+                settings.DEFAULT_FROM_EMAIL,
+                [application.applicant.email],
+                fail_silently=False,
+            )
+
+        # Delete the job
         job.delete()
         return redirect('my_job_postings')
+
+    return render(request, 'jobs/confirm_delete.html', {'job': job})
 
 
 @login_required
@@ -207,25 +220,28 @@ def job_list(request):
 @login_required
 def update_application_status(request, pk):
     application = get_object_or_404(Application, pk=pk)
+
     if request.method == 'POST':
         form = ApplicationStatusForm(request.POST, instance=application)
         if form.is_valid():
             form.save()
 
-            # Send email to applicant notifying them of status change
-            subject = 'Your application status has been updated'
-            message = f'Your application for the job {application.job.title} is now "{application.get_status_display()}".'
-            send_mail(
-                subject,
-                message,
-                'no-reply@jobboardapp.com',  # From email
-                [application.applicant.email],  # To email
-                fail_silently=False,
-            )
+            # Send email to the applicant about the status update
+            subject = f"Your application status for {application.job.title} has been updated"
+            message = f"Dear {application.applicant.username},\n\nYour application status is now: {application.get_status_display()}."
+            send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, [application.applicant.email])
 
-            return redirect('some_redirect_url')  # Replace with your redirect URL
+            # Send email to the recruiter about the status update
+            recruiter_subject = f"Application status updated for {application.job.title}"
+            recruiter_message = f"The application status for {application.applicant.username} has been updated to: {application.get_status_display()}."
+            send_mail(recruiter_subject, recruiter_message, settings.DEFAULT_FROM_EMAIL,
+                      [application.job.recruiter.email])
+
+            return redirect('manage_applications', job_id=application.job.pk)
+
     else:
         form = ApplicationStatusForm(instance=application)
+
     return render(request, 'jobs/update_application_status.html', {'form': form, 'application': application})
 
 
@@ -233,3 +249,22 @@ def update_application_status(request, pk):
 def application_history(request):
     applications = Application.objects.filter(applicant=request.user)
     return render(request, 'jobs/application_history.html', {'applications': applications})
+
+
+@login_required
+def my_applications(request):
+    applications = Application.objects.filter(applicant=request.user)
+    return render(request, 'jobs/my_applications.html', {'applications': applications})
+
+
+@login_required
+def manage_applications(request, job_id):
+    job = get_object_or_404(Job, id=job_id, recruiter=request.user)
+    applications = Application.objects.filter(job=job)
+
+    # Create a form for each application to update the status
+    for application in applications:
+        application.form = ApplicationStatusForm(instance=application)
+
+    return render(request, 'jobs/manage_applications.html', {'job': job, 'applications': applications})
+
