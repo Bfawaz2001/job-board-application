@@ -1,12 +1,15 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.forms import UserCreationForm
-from .models import Job, Profile
+from .models import Job
 from .forms import JobForm, SignUpForm, ProfileForm, ApplicantProfileForm
 from .forms import ApplicationForm
-from django.contrib.auth.forms import UserChangeForm
 from django.db.models import Q
+from .models import Application
+from django.core.mail import send_mail
+from django.conf import settings
+from .forms import ApplicationStatusForm
+
 
 
 # Home view displaying job listings
@@ -124,8 +127,9 @@ def delete_job(request, pk):
 
 
 @login_required
-def apply_for_job(request, pk):
-    job = get_object_or_404(Job, pk=pk)
+def apply_for_job(request, job_id):
+    job = get_object_or_404(Job, id=job_id)
+
     if request.method == 'POST':
         form = ApplicationForm(request.POST, request.FILES)
         if form.is_valid():
@@ -133,7 +137,26 @@ def apply_for_job(request, pk):
             application.applicant = request.user
             application.job = job
             application.save()
-            return redirect('home')
+
+            # Send notification to the applicant
+            send_mail(
+                'Application Received',
+                f'Thank you for applying for {job.title} at {job.company}.',
+                settings.DEFAULT_FROM_EMAIL,
+                [request.user.email],
+                fail_silently=False,
+            )
+
+            # Send notification to the recruiter
+            send_mail(
+                'New Job Application',
+                f'A new application has been received for {job.title} from {request.user.username}.',
+                settings.DEFAULT_FROM_EMAIL,
+                [job.recruiter.email],
+                fail_silently=False,
+            )
+
+            return redirect('job_detail', pk=job.id)
     else:
         form = ApplicationForm()
 
@@ -179,3 +202,34 @@ def job_list(request):
         jobs = jobs.filter(working_condition=working_condition_query)
 
     return render(request, 'jobs/job_list.html', {'jobs': jobs})
+
+
+@login_required
+def update_application_status(request, pk):
+    application = get_object_or_404(Application, pk=pk)
+    if request.method == 'POST':
+        form = ApplicationStatusForm(request.POST, instance=application)
+        if form.is_valid():
+            form.save()
+
+            # Send email to applicant notifying them of status change
+            subject = 'Your application status has been updated'
+            message = f'Your application for the job {application.job.title} is now "{application.get_status_display()}".'
+            send_mail(
+                subject,
+                message,
+                'no-reply@jobboardapp.com',  # From email
+                [application.applicant.email],  # To email
+                fail_silently=False,
+            )
+
+            return redirect('some_redirect_url')  # Replace with your redirect URL
+    else:
+        form = ApplicationStatusForm(instance=application)
+    return render(request, 'jobs/update_application_status.html', {'form': form, 'application': application})
+
+
+@login_required
+def application_history(request):
+    applications = Application.objects.filter(applicant=request.user)
+    return render(request, 'jobs/application_history.html', {'applications': applications})

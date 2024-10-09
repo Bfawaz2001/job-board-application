@@ -130,3 +130,13 @@ LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
 
 STATIC_URL = '/static/'
+
+
+# Email backend settings for Mailtrap
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'sandbox.smtp.mailtrap.io'
+EMAIL_HOST_USER = '3d96f8f1d03228'  # Your Mailtrap username
+EMAIL_HOST_PASSWORD = '99cca15bfe6531'  # Your Mailtrap password
+EMAIL_PORT = 2525
+EMAIL_USE_TLS = True  # TLS should be enabled
+DEFAULT_FROM_EMAIL = 'no-reply@jobboardapp.com'  # Update to your default email

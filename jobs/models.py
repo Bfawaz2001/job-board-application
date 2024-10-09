@@ -61,11 +61,21 @@ def save_user_profile(sender, instance, **kwargs):
 
 
 class Application(models.Model):
+    STATUS_CHOICES = [
+        ('under_review', 'Under Review'),
+        ('interviewing', 'Interviewing'),
+        ('rejected', 'Rejected'),
+        ('hired', 'Hired'),
+    ]
+
     applicant = models.ForeignKey(User, on_delete=models.CASCADE)
     job = models.ForeignKey(Job, on_delete=models.CASCADE)
     resume = models.FileField(upload_to='resumes/', blank=True, null=True)
     cover_letter = models.TextField(blank=True, null=True)
     applied_on = models.DateTimeField(auto_now_add=True)
+    status = models.CharField(max_length=50, choices=STATUS_CHOICES, default='under_review')
 
     def __str__(self):
         return f"{self.applicant.username} applied for {self.job.title}"
+
+
